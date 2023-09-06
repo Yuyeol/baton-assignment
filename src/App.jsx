@@ -41,10 +41,11 @@ function App() {
   const addBalloon = () => {
     const randomIcon = Math.floor(Math.random() * icons.length);
     const randomRoot = Math.floor(Math.random() * 3);
-    setBalloons([
-      ...balloons,
+    // 동기적으로 상태를 업데이트하지 않으니 누락이 발생하여 함수형 업데이트를 사용
+    setBalloons((prev) => [
+      ...prev,
       {
-        id: balloons.length + 1,
+        id: prev.length + 1,
         name: icons[randomIcon],
         deg: getRange(-20, 20, 3),
         height: getRange(30, 90, 5),
@@ -53,10 +54,13 @@ function App() {
     ]);
   };
   const removeBalloon = (id) => {
-    setBalloons(balloons.filter((balloon) => balloon.id !== id));
+    setTimeout(() => {
+      setBalloons((prev) => prev.filter((balloon) => balloon.id !== id));
+    }, 1000);
   };
   return (
     <Container>
+      {/* 3개의 root에 delay를 다르게 주어 풍선의 움직임을 불규칙적으로 연출 */}
       <BalloonRoot
         balloons={balloons.filter((b) => b.rootIdx === 0)}
         removeBalloon={removeBalloon}
@@ -64,12 +68,12 @@ function App() {
       <BalloonRoot
         balloons={balloons.filter((b) => b.rootIdx === 1)}
         removeBalloon={removeBalloon}
-        positionX={5}
+        delay={-1}
       />
       <BalloonRoot
         balloons={balloons.filter((b) => b.rootIdx === 2)}
         removeBalloon={removeBalloon}
-        positionX={-5}
+        delay={-2}
       />
       <House addBalloon={addBalloon} />
     </Container>
@@ -78,6 +82,7 @@ function App() {
 
 export default App;
 
+// 높이, 각도를 범위 내에서 랜덤생성
 function getRange(min, max, interval) {
   return (Math.floor(Math.random() * (max - min + 1)) + min) * interval;
 }
