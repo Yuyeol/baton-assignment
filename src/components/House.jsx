@@ -5,13 +5,15 @@ const Container = styled.div``;
 const ImageWrapper = styled.div`
   width: 200px;
   z-index: 1;
-  transform: translate(0);
+  transform: translateY(-70px);
 `;
-function House() {
+function House({ addBalloon }) {
   return (
     <Container>
       <ImageWrapper>
-        <img alt="house" src="img/icon/house.png" />
+        <button onClick={addBalloon}>
+          <img alt="house" src="img/icon/house.png" />
+        </button>
       </ImageWrapper>
     </Container>
   );
