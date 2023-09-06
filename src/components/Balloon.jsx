@@ -16,7 +16,7 @@ const ImageWrapper = styled.div`
   transform: translate(-50%, -50%) rotate(${(props) => props.deg * -1}deg);
 `;
 const Line = styled.div`
-  width: 3px;
+  width: 2px;
   height: ${(props) => props.height}px;
   background: black;
 `;
