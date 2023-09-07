@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import House from "./components/House";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BalloonRoot from "./components/BalloonRoot";
 import { nanoid } from "nanoid";
 import Modal from "./components/Modal";
@@ -52,6 +52,7 @@ function App() {
     }, 1000);
   };
 
+  const prevBalloonsLengthRef = useRef(0);
   useEffect(() => {
     switch (balloons.length) {
       case 5:
@@ -65,11 +66,12 @@ function App() {
         break;
       case 20:
         setBackgroundY(0);
-        setModalType("caution");
+        prevBalloonsLengthRef.current < 20 && setModalType("caution");
         break;
       default:
         break;
     }
+    prevBalloonsLengthRef.current = balloons.length;
   }, [balloons]);
 
   return (
