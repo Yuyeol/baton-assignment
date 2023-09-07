@@ -6,12 +6,13 @@ import { nanoid } from "nanoid";
 import Modal from "./components/Modal";
 import Alert from "./components/Modal/Alert";
 import Pop from "./components/Modal/Pop";
+import skyImage from "../public/img/background/sky.jpeg";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background: url("/img/background/sky.jpeg");
+  background: url(${skyImage});
   background-size: cover;
   background-position-x: center;
   background-position-y: ${(props) => props.backgroundY}%;
