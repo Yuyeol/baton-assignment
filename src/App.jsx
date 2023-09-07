@@ -1,42 +1,31 @@
 import styled from "@emotion/styled";
 import House from "./components/House";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BalloonRoot from "./components/BalloonRoot";
+import { nanoid } from "nanoid";
+import Modal from "./components/Modal";
+import Alert from "./components/Modal/Alert";
+import Pop from "./components/Modal/Pop";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background: skyblue;
+  background: url("/img/background/sky.jpeg");
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: ${(props) => props.backgroundY}%;
+  background-repeat: no-repeat;
+  transition: all 0.5s ease-in-out;
   height: 100vh;
   position: relative;
 `;
 
 function App() {
   const icons = ["sun", "leaf", "cloud", "water", "world"];
-  const [balloons, setBalloons] = useState([
-    {
-      id: 1,
-      name: "sun",
-      deg: 6,
-      height: 200,
-      rootIdx: 0,
-    },
-    {
-      id: 2,
-      name: "leaf",
-      deg: 0,
-      height: 150,
-      rootIdx: 1,
-    },
-    {
-      id: 3,
-      name: "cloud",
-      deg: -18,
-      height: 250,
-      rootIdx: 2,
-    },
-  ]);
+  const [balloons, setBalloons] = useState([]);
+  const [modalType, setModalType] = useState(false);
+  const [backgroundY, setBackgroundY] = useState(80);
 
   const addBalloon = () => {
     const randomIcon = Math.floor(Math.random() * icons.length);
@@ -45,21 +34,65 @@ function App() {
     setBalloons((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        id: nanoid(),
         name: icons[randomIcon],
         deg: getRange(-20, 20, 3),
         height: getRange(30, 90, 5),
         rootIdx: randomRoot,
+        // 30% 확률로 행운의 풍선 생성
+        isLucky: Math.random() < 0.3,
       },
     ]);
   };
-  const removeBalloon = (id) => {
+  const removeBalloon = (id, isLucky) => {
     setTimeout(() => {
       setBalloons((prev) => prev.filter((balloon) => balloon.id !== id));
+      isLucky && setModalType("lucky");
     }, 1000);
   };
+
+  useEffect(() => {
+    switch (balloons.length) {
+      case 5:
+        setBackgroundY(60);
+        break;
+      case 10:
+        setBackgroundY(40);
+        break;
+      case 15:
+        setBackgroundY(20);
+        break;
+      case 20:
+        setBackgroundY(0);
+        setModalType("caution");
+        break;
+      default:
+        break;
+    }
+  }, [balloons]);
+
   return (
-    <Container>
+    <Container backgroundY={backgroundY}>
+      {/* modalType이 lucky일때 나타나는 유니콘 */}
+      <Pop isModalOpen={modalType === "lucky"} />
+      <Modal
+        isModalOpen={!!modalType}
+        setModalType={setModalType}
+        // 다양한 모달 content가 들어올 가능성을 고려하여 컴포넌트를 props로 전달(component composition)
+        content={
+          <Alert
+            text={
+              modalType === "caution"
+                ? `이제 풍선을 터뜨려보는건 어떨까요?\n터뜨리면 다른 효과가 나타날지도...🤔`
+                : modalType === "lucky"
+                ? `구해줘서 고마워요😵‍💫`
+                : ``
+            }
+            isModalOpen={!!modalType}
+            setModalType={setModalType}
+          />
+        }
+      />
       {/* 3개의 root에 delay를 다르게 주어 풍선의 움직임을 불규칙적으로 연출 */}
       <BalloonRoot
         balloons={balloons.filter((b) => b.rootIdx === 0)}
