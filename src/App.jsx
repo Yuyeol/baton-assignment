@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
 import House from "./components/House";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BalloonRoot from "./components/BalloonRoot";
 import { nanoid } from "nanoid";
+import Modal from "./components/Modal";
+import Alert from "./components/Modal/Alert";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,29 +17,8 @@ const Container = styled.div`
 
 function App() {
   const icons = ["sun", "leaf", "cloud", "water", "world"];
-  const [balloons, setBalloons] = useState([
-    {
-      id: 1,
-      name: "sun",
-      deg: 6,
-      height: 200,
-      rootIdx: 0,
-    },
-    {
-      id: 2,
-      name: "leaf",
-      deg: 0,
-      height: 150,
-      rootIdx: 1,
-    },
-    {
-      id: 3,
-      name: "cloud",
-      deg: -18,
-      height: 250,
-      rootIdx: 2,
-    },
-  ]);
+  const [balloons, setBalloons] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const addBalloon = () => {
     const randomIcon = Math.floor(Math.random() * icons.length);
@@ -59,8 +40,25 @@ function App() {
       setBalloons((prev) => prev.filter((balloon) => balloon.id !== id));
     }, 1000);
   };
+
+  useEffect(() => {
+    balloons.length > 20 && setIsModalOpen(true);
+  }, [balloons]);
+
   return (
     <Container>
+      <Modal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        // 다양한 모달 content가 들어올 가능성을 고려하여 컴포넌트를 props로 전달(component composition)
+        content={
+          <Alert
+            text={`이제 풍선을 터뜨려보는건 어떨까요?\n터뜨리면 다른 효과가 나타날지도...🤔`}
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+          />
+        }
+      />
       {/* 3개의 root에 delay를 다르게 주어 풍선의 움직임을 불규칙적으로 연출 */}
       <BalloonRoot
         balloons={balloons.filter((b) => b.rootIdx === 0)}
@@ -77,6 +75,7 @@ function App() {
         delay={-2}
       />
       <House addBalloon={addBalloon} />
+      <div onClick={() => setIsModalOpen(true)}>모달오픈</div>
     </Container>
   );
 }
