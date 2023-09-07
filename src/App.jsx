@@ -11,7 +11,12 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background: skyblue;
+  background: url("/img/background/sky.jpeg");
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: ${(props) => props.backgroundY}%;
+  background-repeat: no-repeat;
+  transition: all 0.5s ease-in-out;
   height: 100vh;
   position: relative;
 `;
@@ -20,6 +25,7 @@ function App() {
   const icons = ["sun", "leaf", "cloud", "water", "world"];
   const [balloons, setBalloons] = useState([]);
   const [modalType, setModalType] = useState(false);
+  const [backgroundY, setBackgroundY] = useState(80);
 
   const addBalloon = () => {
     const randomIcon = Math.floor(Math.random() * icons.length);
@@ -46,11 +52,27 @@ function App() {
   };
 
   useEffect(() => {
-    balloons.length === 20 && setModalType("caution");
+    switch (balloons.length) {
+      case 5:
+        setBackgroundY(60);
+        break;
+      case 10:
+        setBackgroundY(40);
+        break;
+      case 15:
+        setBackgroundY(20);
+        break;
+      case 20:
+        setBackgroundY(0);
+        setModalType("caution");
+        break;
+      default:
+        break;
+    }
   }, [balloons]);
 
   return (
-    <Container>
+    <Container backgroundY={backgroundY}>
       {/* modalType이 lucky일때 나타나는 유니콘 */}
       <Pop isModalOpen={modalType === "lucky"} />
       <Modal
