@@ -28,7 +28,7 @@ const Button = styled.button`
   margin: 0 auto;
   margin-top: 1rem;
 `;
-function Alert({ text, isModalOpen, setIsModalOpen }) {
+function Alert({ text, isModalOpen, setModalType }) {
   return (
     <AnimatePresence>
       {isModalOpen && (
@@ -39,7 +39,7 @@ function Alert({ text, isModalOpen, setIsModalOpen }) {
           transition={{ duration: 0.5 }}
         >
           <Text>{text}</Text>
-          <Button onClick={() => setIsModalOpen(false)}>오키</Button>
+          <Button onClick={() => setModalType("")}>오키</Button>
         </Container>
       )}
     </AnimatePresence>

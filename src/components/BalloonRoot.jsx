@@ -24,7 +24,7 @@ function BalloonRoot({ balloons, removeBalloon, delay = 0, isBalloonLoading }) {
     >
       {balloons.map((balloon) => (
         <Balloon
-          removeBalloon={() => removeBalloon(balloon.id)}
+          removeBalloon={() => removeBalloon(balloon.id, balloon.isLucky)}
           key={balloon.id}
           balloon={balloon}
           isBalloonLoading={isBalloonLoading}

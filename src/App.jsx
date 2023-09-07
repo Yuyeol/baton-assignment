@@ -5,6 +5,7 @@ import BalloonRoot from "./components/BalloonRoot";
 import { nanoid } from "nanoid";
 import Modal from "./components/Modal";
 import Alert from "./components/Modal/Alert";
+import Pop from "./components/Modal/Pop";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,7 +19,7 @@ const Container = styled.div`
 function App() {
   const icons = ["sun", "leaf", "cloud", "water", "world"];
   const [balloons, setBalloons] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(false);
 
   const addBalloon = () => {
     const randomIcon = Math.floor(Math.random() * icons.length);
@@ -32,30 +33,41 @@ function App() {
         deg: getRange(-20, 20, 3),
         height: getRange(30, 90, 5),
         rootIdx: randomRoot,
+        // 30% 확률로 행운의 풍선 생성
+        isLucky: Math.random() < 0.3,
       },
     ]);
   };
-  const removeBalloon = (id) => {
+  const removeBalloon = (id, isLucky) => {
     setTimeout(() => {
       setBalloons((prev) => prev.filter((balloon) => balloon.id !== id));
+      isLucky && setModalType("lucky");
     }, 1000);
   };
 
   useEffect(() => {
-    balloons.length > 20 && setIsModalOpen(true);
+    balloons.length === 20 && setModalType("caution");
   }, [balloons]);
 
   return (
     <Container>
+      {/* modalType이 lucky일때 나타나는 유니콘 */}
+      <Pop isModalOpen={modalType === "lucky"} />
       <Modal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
+        isModalOpen={!!modalType}
+        setModalType={setModalType}
         // 다양한 모달 content가 들어올 가능성을 고려하여 컴포넌트를 props로 전달(component composition)
         content={
           <Alert
-            text={`이제 풍선을 터뜨려보는건 어떨까요?\n터뜨리면 다른 효과가 나타날지도...🤔`}
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
+            text={
+              modalType === "caution"
+                ? `이제 풍선을 터뜨려보는건 어떨까요?\n터뜨리면 다른 효과가 나타날지도...🤔`
+                : modalType === "lucky"
+                ? `구해줘서 고마워요😵‍💫`
+                : ``
+            }
+            isModalOpen={!!modalType}
+            setModalType={setModalType}
           />
         }
       />
@@ -75,7 +87,6 @@ function App() {
         delay={-2}
       />
       <House addBalloon={addBalloon} />
-      <div onClick={() => setIsModalOpen(true)}>모달오픈</div>
     </Container>
   );
 }
