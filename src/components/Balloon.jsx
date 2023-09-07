@@ -53,6 +53,7 @@ function Balloon({ balloon, removeBalloon }) {
         </button>
         <PopBalloon
           animate={{
+            display: isBalloonRemoved ? "block" : "none",
             opacity: isBalloonRemoved ? 1 : 0,
             zIndex: isBalloonRemoved ? 1 : -1,
             translateX: isBalloonRemoved ? -20 : -40,

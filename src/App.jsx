@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import House from "./components/House";
 import { useState } from "react";
 import BalloonRoot from "./components/BalloonRoot";
+import { nanoid } from "nanoid";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,7 +46,7 @@ function App() {
     setBalloons((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        id: nanoid(),
         name: icons[randomIcon],
         deg: getRange(-20, 20, 3),
         height: getRange(30, 90, 5),
